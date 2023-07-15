@@ -9,13 +9,11 @@
 #include "LCD.h"
 
 extern TIM_HandleTypeDef timer;
+
 void __LCD_Delay(uint16_t delay) {
 
 	__HAL_TIM_SET_COUNTER(&timer, 0);
-	uint32_t val = 0;
-	while (__HAL_TIM_GET_COUNTER(&timer) < delay) {
-		val = __HAL_TIM_GET_COUNTER(&timer);
-	}
+	while (__HAL_TIM_GET_COUNTER(&timer) < delay);
 
 }
 
@@ -52,6 +50,7 @@ void LCD_Write(char *str) {
 
 	while (*str) {
 		__LCD_Data(*str++);
+		__LCD_Delay(5000);
 		// HAL_Delay(1000);
 	}
 
@@ -71,9 +70,21 @@ void LCD_Pos_Cursor(int row, int col) {
 
 }
 
-void LCD_Clear() {
+void LCD_Clear(void) {
 
-	__LCD_Cmd(0x01);
+	__LCD_Cmd(CLEAR);
+
+}
+
+void LCD_Scroll_Display_Right(void) {
+
+	__LCD_Cmd(SCROLL_DISPLAY_RIGHT);
+
+}
+
+void LCD_Scroll_Display_Left(void) {
+
+	__LCD_Cmd(SCROLL_DISPLAY_LEFT);
 
 }
 
@@ -110,6 +121,9 @@ void LCD_Init(void) {
 
 	// Display on/off
 	__LCD_Cmd(0x0F);
+
+	__LCD_Delay(50000);
+	LCD_Pos_Cursor(0, 0);
 
 }
 

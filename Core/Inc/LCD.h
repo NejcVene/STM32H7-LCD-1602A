@@ -31,15 +31,16 @@
 
 #define timer htim3
 
-void __LCD_Delay(uint16_t delay);
-void __LCD_Write4Bits(uint8_t value);
-void __LCD_Send(uint8_t value, int state);
-void __LCD_Cmd(uint8_t value);
-void __LCD_Data(uint8_t value);
+#define CLEAR 0x01
+#define SCROLL_DISPLAY_LEFT 0x18
+#define SCROLL_DISPLAY_RIGHT 0x1C
 
 void LCD_Init(void);
-void LCD_Write(char *str);
-void LCD_Pos_Cursor(int row, int col);
+void LCD_Write(char *);
+void LCD_Pos_Cursor(int, int);
 void LCD_Clear(void);
+void LCD_Scroll_Display_Left(void);
+void LCD_Scroll_Display_Right(void);
+void LCD_Custom_Char(uint8_t, uint8_t);
 
 #endif /* INC_LCD_H_ */

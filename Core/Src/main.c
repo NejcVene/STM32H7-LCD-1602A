@@ -166,8 +166,10 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
+  int edge = 0, i = 0;
   LCD_Init();
   HAL_Delay(1000);
+  LCD_Write("Zdravo");
   // LCD_Write("Pozdravljen,");
   //LCD_Pos_Cursor(1, 0);
 //   HAL_Delay(500);
@@ -181,12 +183,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if (i < 10 && edge == 0) {
+		  LCD_Scroll_Display_Right();
+		  i++;
+		  if (i == 10) {
+			  edge = 1;
+		  }
+	  } else if (edge == 1) {
+		  LCD_Scroll_Display_Left();
+		  i--;
+		  if (i == 0) {
+			  edge = 0;
+		  }
+	  }
+	  HAL_Delay(1000);
+
+	  /*
 	  HAL_Delay(1000);
 	  LCD_Write("Pozdravljen,");
 	  LCD_Pos_Cursor(1, 0);
 	  LCD_Write("svet!");
 	   HAL_Delay(2000);
 	   LCD_Clear();
+	   */
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
