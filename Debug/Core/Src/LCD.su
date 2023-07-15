@@ -1,0 +1,9 @@
+../Core/Src/LCD.c:12:6:__LCD_Delay	24	static
+../Core/Src/LCD.c:22:6:__LCD_Write4Bits	16	static
+../Core/Src/LCD.c:35:6:__LCD_Send	16	static
+../Core/Src/LCD.c:43:6:__LCD_Cmd	16	static
+../Core/Src/LCD.c:47:6:__LCD_Data	16	static
+../Core/Src/LCD.c:51:6:LCD_Write	16	static
+../Core/Src/LCD.c:60:6:LCD_Pos_Cursor	16	static
+../Core/Src/LCD.c:74:6:LCD_Clear	8	static
+../Core/Src/LCD.c:80:6:LCD_Init	8	static

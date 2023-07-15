@@ -1,0 +1,9 @@
+LCD.c:12:6:__LCD_Delay	2
+LCD.c:22:6:__LCD_Write4Bits	1
+LCD.c:35:6:__LCD_Send	1
+LCD.c:43:6:__LCD_Cmd	1
+LCD.c:47:6:__LCD_Data	1
+LCD.c:51:6:LCD_Write	2
+LCD.c:60:6:LCD_Pos_Cursor	3
+LCD.c:74:6:LCD_Clear	1
+LCD.c:80:6:LCD_Init	1
