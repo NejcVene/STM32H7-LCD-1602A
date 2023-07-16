@@ -9,6 +9,7 @@
 #define INC_LCD_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "stm32h7xx_hal.h"
 
 #define RS_PORT GPIOB
@@ -31,13 +32,17 @@
 
 #define timer htim3
 
+#define CURSOR_BLINK 0x0F
+#define CURSOR 0x0E
+#define BLINK 0x0D
+#define NO_BLINK_NO_CURSOR 0x0C
 #define CLEAR 0x01
 #define SCROLL_DISPLAY_LEFT 0x18
 #define SCROLL_DISPLAY_RIGHT 0x1C
 
-void LCD_Init(void);
+void LCD_Init(bool, bool);
 void LCD_Write(char *);
-void LCD_Pos_Cursor(int, int);
+void LCD_Pos_Cursor(uint8_t, uint8_t);
 void LCD_Clear(void);
 void LCD_Scroll_Display_Left(void);
 void LCD_Scroll_Display_Right(void);

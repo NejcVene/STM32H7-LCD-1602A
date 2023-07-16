@@ -167,7 +167,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   int edge = 0, i = 0;
-  LCD_Init();
+  LCD_Init(true, true);
   HAL_Delay(1000);
   LCD_Write("Zdravo");
   // LCD_Write("Pozdravljen,");
