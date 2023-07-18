@@ -23,6 +23,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
 #include "LCD.h"
 
 /* USER CODE END Includes */
@@ -34,6 +38,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+#define RX_BUFFER_SIZE 16
+#define WELCOME_STRINGS 10
 
 /* USER CODE END PD */
 
@@ -90,6 +97,20 @@ SDRAM_HandleTypeDef hsdram1;
 
 /* USER CODE BEGIN PV */
 
+char rxBuffer[RX_BUFFER_SIZE];
+char *welcomeStrings[WELCOME_STRINGS] = {
+		"|*********************************|\r\n",
+		"| Welcome to LCD demo application |\r\n",
+		"|          Made by N.V            |\r\n",
+		"|*********************************|\r\n",
+		"\r\n",
+		"Options:\r\n",
+		"        1. Send text to LCD\r\n",
+		"        2. Move text\r\n",
+		"        3. Clock\r\n",
+		"Input: "
+};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -111,6 +132,11 @@ static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
+
+void printWelcomeText(void);
+void receiveOption(void);
+void typeToLCD(void);
+void moveTextLCD(void);
 
 /* USER CODE END PFP */
 
@@ -166,10 +192,14 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-  int edge = 0, i = 0;
+
   LCD_Init(true, true);
-  HAL_Delay(1000);
-  LCD_Write("Zdravo");
+  printWelcomeText();
+  moveTextLCD();
+  // int edge = 0, i = 0;
+  // LCD_Init(true, true);
+  // HAL_Delay(1000);
+  // LCD_Write("Zdravo");
   // LCD_Write("Pozdravljen,");
   //LCD_Pos_Cursor(1, 0);
 //   HAL_Delay(500);
@@ -183,6 +213,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+	  /*
 	  if (i < 10 && edge == 0) {
 		  LCD_Scroll_Display_Right();
 		  i++;
@@ -197,7 +229,7 @@ int main(void)
 		  }
 	  }
 	  HAL_Delay(1000);
-
+	  */
 	  /*
 	  HAL_Delay(1000);
 	  LCD_Write("Pozdravljen,");
@@ -1238,6 +1270,67 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void printWelcomeText(void) {
+
+	for (int i = 0; i<WELCOME_STRINGS; i++) {
+		HAL_UART_Transmit(&huart3, (const uint8_t *) welcomeStrings[i], strlen(welcomeStrings[i]), 6000);
+	}
+
+}
+
+void receiveOption(void) {
+
+	HAL_UART_Receive_IT(&huart3, rxBuffer, 1);
+	switch ((int) rxBuffer[0]) {
+		case 1:
+			typeToLCD();
+			break;
+		case 2:
+			moveTextLCD();
+			break;
+		case 3:
+			break;
+		default:
+			return;
+	}
+
+}
+
+void typeToLCD(void) {
+
+	HAL_UART_Receive_IT(&huart3, rxBuffer, RX_BUFFER_SIZE);
+	LCD_Clear();
+	LCD_Write(rxBuffer);
+
+}
+
+void moveTextLCD(void) {
+
+	strcpy(rxBuffer, "Hello"); // remove later
+	LCD_Write(rxBuffer);
+	HAL_Delay(1000);
+	int i = 0, stringLength = strlen(rxBuffer);
+	bool edge = false;
+	while (1) {
+		if (i < (16 - stringLength) && !edge) {
+			LCD_Scroll_Display_Right();
+			i++;
+			if (i == (16 - stringLength)) {
+				edge = true;
+			}
+		} else if (edge) {
+			LCD_Scroll_Display_Left();
+			i--;
+			if (i == 0) {
+				edge = false;
+			}
+		}
+		HAL_Delay(1000);
+	}
+
+}
+
 
 /* USER CODE END 4 */
 
