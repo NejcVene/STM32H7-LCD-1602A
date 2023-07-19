@@ -34,6 +34,16 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+typedef enum {
+	SETUP,
+	SHOW_MENU,
+	GET_OPTION,
+	SELECT_PROGRAM,
+	TEXT_TO_LCD,
+	MOVE_TEXT,
+	CLOCK_F
+} STATE;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -97,6 +107,7 @@ SDRAM_HandleTypeDef hsdram1;
 
 /* USER CODE BEGIN PV */
 
+bool haveReceived = false;
 char rxBuffer[RX_BUFFER_SIZE];
 char *welcomeStrings[WELCOME_STRINGS] = {
 		"|*********************************|\r\n",
@@ -133,8 +144,8 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
-void printWelcomeText(void);
-void receiveOption(void);
+bool printWelcomeText(void);
+bool receiveValue(int);
 void typeToLCD(void);
 void moveTextLCD(void);
 
@@ -192,52 +203,61 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-
-  LCD_Init(true, true);
-  printWelcomeText();
-  moveTextLCD();
-  // int edge = 0, i = 0;
-  // LCD_Init(true, true);
-  // HAL_Delay(1000);
-  // LCD_Write("Zdravo");
-  // LCD_Write("Pozdravljen,");
-  //LCD_Pos_Cursor(1, 0);
-//   HAL_Delay(500);
-  //LCD_Write("svet!");
-//  HAL_Delay(2000);
- // LCD_Clear();
+  STATE state = SETUP;
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-
-	  /*
-	  if (i < 10 && edge == 0) {
-		  LCD_Scroll_Display_Right();
-		  i++;
-		  if (i == 10) {
-			  edge = 1;
-		  }
-	  } else if (edge == 1) {
-		  LCD_Scroll_Display_Left();
-		  i--;
-		  if (i == 0) {
-			  edge = 0;
-		  }
+  while (1) {
+	  switch (state) {
+	  	  case SETUP:
+	  		  LCD_Init(true, true);
+	  		  state = SHOW_MENU;
+	  		  break;
+	  	  case SHOW_MENU:
+	  		  if (printWelcomeText()) {
+	  			  state = GET_OPTION;
+	  		  }
+	  		  break;
+	  	  case GET_OPTION:
+	  		  if (receiveValue(1)) {
+	  			  state = SELECT_PROGRAM;
+	  		  }
+	  		  break;
+	  	  case SELECT_PROGRAM:
+	  		  if (haveReceived) {
+	  			switch (rxBuffer[0]) {
+	  				case '1':
+	  					state = TEXT_TO_LCD;
+	  				  	break;
+	  				case '2':
+	  					if (receiveValue(4)) {
+	  						state = MOVE_TEXT;
+	  					}
+	  				  	break;
+	  				case '3':
+	  				  	state = CLOCK_F;
+	  				  	break;
+	  				default:
+	  				  	break;
+	  			}
+	  			if (state != SELECT_PROGRAM) {
+	  				haveReceived = false;
+	  			}
+	  		  }
+	  		  break;
+	  	  case TEXT_TO_LCD:
+	  		  typeToLCD();
+	  		  break;
+	  	  case MOVE_TEXT:
+	  		  moveTextLCD();
+	  		  break;
+	  	  case CLOCK_F:
+	  		  break;
+	  	  default:
+	  		  return -1;
 	  }
-	  HAL_Delay(1000);
-	  */
-	  /*
-	  HAL_Delay(1000);
-	  LCD_Write("Pozdravljen,");
-	  LCD_Pos_Cursor(1, 0);
-	  LCD_Write("svet!");
-	   HAL_Delay(2000);
-	   LCD_Clear();
-	   */
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -1271,29 +1291,31 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-void printWelcomeText(void) {
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
-	for (int i = 0; i<WELCOME_STRINGS; i++) {
-		HAL_UART_Transmit(&huart3, (const uint8_t *) welcomeStrings[i], strlen(welcomeStrings[i]), 6000);
+	if (huart == &huart3) {
+		haveReceived = true;
 	}
 
 }
 
-void receiveOption(void) {
+bool printWelcomeText(void) {
 
-	HAL_UART_Receive_IT(&huart3, rxBuffer, 1);
-	switch ((int) rxBuffer[0]) {
-		case 1:
-			typeToLCD();
-			break;
-		case 2:
-			moveTextLCD();
-			break;
-		case 3:
-			break;
-		default:
-			return;
+	for (int i = 0; i<WELCOME_STRINGS; i++) {
+		if (HAL_UART_Transmit(&huart3, (const uint8_t *) welcomeStrings[i], strlen(welcomeStrings[i]), 6000) != HAL_OK) {
+			return false;
+		}
 	}
+	return true;
+
+}
+
+bool receiveValue(int bytesToReceive) {
+
+	if (HAL_UART_Receive_IT(&huart3, rxBuffer, bytesToReceive) != HAL_OK) {
+		return false;
+	}
+	return true;
 
 }
 
@@ -1307,9 +1329,11 @@ void typeToLCD(void) {
 
 void moveTextLCD(void) {
 
-	strcpy(rxBuffer, "Hello"); // remove later
-	LCD_Write(rxBuffer);
+	if (!haveReceived) {
+		return;
+	}
 	HAL_Delay(1000);
+	LCD_Write(rxBuffer);
 	int i = 0, stringLength = strlen(rxBuffer);
 	bool edge = false;
 	while (1) {
