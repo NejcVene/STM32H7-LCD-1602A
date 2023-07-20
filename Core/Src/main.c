@@ -23,9 +23,11 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "LCD.h"
 
@@ -49,7 +51,7 @@ typedef enum {
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
-#define RX_BUFFER_SIZE 16
+#define RX_BUFFER_SIZE 32
 #define WELCOME_STRINGS 10
 
 /* USER CODE END PD */
@@ -122,6 +124,9 @@ char *welcomeStrings[WELCOME_STRINGS] = {
 		"Input: "
 };
 
+RTC_TimeTypeDef sTime;
+RTC_DateTypeDef sDate;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -148,6 +153,7 @@ bool printWelcomeText(void);
 bool receiveValue(int);
 void typeToLCD(void);
 void moveTextLCD(void);
+void displayClock(void);
 
 /* USER CODE END PFP */
 
@@ -212,7 +218,7 @@ int main(void)
   while (1) {
 	  switch (state) {
 	  	  case SETUP:
-	  		  LCD_Init(true, true);
+	  		  LCD_Init(false, false);
 	  		  state = SHOW_MENU;
 	  		  break;
 	  	  case SHOW_MENU:
@@ -229,7 +235,9 @@ int main(void)
 	  		  if (haveReceived) {
 	  			switch (rxBuffer[0]) {
 	  				case '1':
-	  					state = TEXT_TO_LCD;
+	  					if (receiveValue(32)) {
+	  						state = TEXT_TO_LCD;
+	  					}
 	  				  	break;
 	  				case '2':
 	  					if (receiveValue(4)) {
@@ -254,6 +262,8 @@ int main(void)
 	  		  moveTextLCD();
 	  		  break;
 	  	  case CLOCK_F:
+	  		  displayClock();
+	  		  HAL_Delay(800);
 	  		  break;
 	  	  default:
 	  		  return -1;
@@ -787,6 +797,9 @@ static void MX_RTC_Init(void)
 
   /* USER CODE END RTC_Init 0 */
 
+  RTC_TimeTypeDef sTime = {0};
+  RTC_DateTypeDef sDate = {0};
+
   /* USER CODE BEGIN RTC_Init 1 */
 
   /* USER CODE END RTC_Init 1 */
@@ -802,6 +815,31 @@ static void MX_RTC_Init(void)
   hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
   hrtc.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
   if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* USER CODE BEGIN Check_RTC_BKUP */
+
+  /* USER CODE END Check_RTC_BKUP */
+
+  /** Initialize RTC and set the Time and Date
+  */
+  sTime.Hours = 0;
+  sTime.Minutes = 0;
+  sTime.Seconds = 0;
+  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+  sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.Month = RTC_MONTH_JANUARY;
+  sDate.Date = 1;
+  sDate.Year = 0;
+
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN) != HAL_OK)
   {
     Error_Handler();
   }
@@ -1352,6 +1390,26 @@ void moveTextLCD(void) {
 		}
 		HAL_Delay(1000);
 	}
+
+}
+
+void displayClock() {
+
+	uint8_t seconds, minutes, hours;
+	char timeString[9];
+
+	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+	seconds = sTime.Seconds;
+	minutes = sTime.Minutes;
+	hours = sTime.Hours;
+	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+	sprintf(timeString, "%02u:%02u:%02u", hours, minutes, seconds);
+
+	HAL_Delay(100);
+	LCD_Pos_Cursor(0, 0);
+	HAL_Delay(100);
+	LCD_Write(timeString);
+
 
 }
 
