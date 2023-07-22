@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <time.h>
 
 #include "LCD.h"
 
@@ -41,7 +40,6 @@ typedef enum {
 	SHOW_MENU,
 	GET_OPTION,
 	SELECT_PROGRAM,
-	TEXT_TO_LCD,
 	MOVE_TEXT,
 	CLOCK_F
 } STATE;
@@ -52,7 +50,7 @@ typedef enum {
 /* USER CODE BEGIN PD */
 
 #define RX_BUFFER_SIZE 32
-#define WELCOME_STRINGS 10
+#define WELCOME_STRINGS 9
 
 /* USER CODE END PD */
 
@@ -118,9 +116,8 @@ char *welcomeStrings[WELCOME_STRINGS] = {
 		"|*********************************|\r\n",
 		"\r\n",
 		"Options:\r\n",
-		"        1. Send text to LCD\r\n",
-		"        2. Move text\r\n",
-		"        3. Clock\r\n",
+		"        1. Move text\r\n",
+		"        2. Clock\r\n",
 		"Input: "
 };
 
@@ -233,30 +230,22 @@ int main(void)
 	  		  break;
 	  	  case SELECT_PROGRAM:
 	  		  if (haveReceived) {
-	  			switch (rxBuffer[0]) {
-	  				case '1':
-	  					if (receiveValue(32)) {
-	  						state = TEXT_TO_LCD;
-	  					}
-	  				  	break;
-	  				case '2':
-	  					if (receiveValue(4)) {
-	  						state = MOVE_TEXT;
-	  					}
-	  				  	break;
-	  				case '3':
-	  				  	state = CLOCK_F;
-	  				  	break;
-	  				default:
-	  				  	break;
-	  			}
-	  			if (state != SELECT_PROGRAM) {
-	  				haveReceived = false;
-	  			}
+	  			  HAL_UART_Transmit(&huart3, (const uint8_t *) rxBuffer, 1, 6000);
+	  			  switch (rxBuffer[0]) {
+	  			  	  case '1':
+	  			  		  state = MOVE_TEXT;
+	  			  		  break;
+	  			  	  case '2':
+	  			  		  state = CLOCK_F;
+	  			  		  break;
+	  			  	  default:
+	  			  		  state = GET_OPTION;
+	  			  		  break;
+	  			  }
+	  			  if (state != SELECT_PROGRAM) {
+	  				  haveReceived = false;
+	  			  }
 	  		  }
-	  		  break;
-	  	  case TEXT_TO_LCD:
-	  		  typeToLCD();
 	  		  break;
 	  	  case MOVE_TEXT:
 	  		  moveTextLCD();
@@ -1040,7 +1029,7 @@ static void MX_USART3_UART_Init(void)
 
   /* USER CODE END USART3_Init 1 */
   huart3.Instance = USART3;
-  huart3.Init.BaudRate = 115200;
+  huart3.Init.BaudRate = 9600;
   huart3.Init.WordLength = UART_WORDLENGTH_8B;
   huart3.Init.StopBits = UART_STOPBITS_1;
   huart3.Init.Parity = UART_PARITY_NONE;
@@ -1329,6 +1318,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	if (huart == &huart3) {
@@ -1357,19 +1347,10 @@ bool receiveValue(int bytesToReceive) {
 
 }
 
-void typeToLCD(void) {
-
-	HAL_UART_Receive_IT(&huart3, rxBuffer, RX_BUFFER_SIZE);
-	LCD_Clear();
-	LCD_Write(rxBuffer);
-
-}
 
 void moveTextLCD(void) {
 
-	if (!haveReceived) {
-		return;
-	}
+	strcpy(rxBuffer, "Hello");
 	HAL_Delay(1000);
 	LCD_Write(rxBuffer);
 	int i = 0, stringLength = strlen(rxBuffer);
