@@ -38,6 +38,7 @@
 typedef enum {
 	SETUP,
 	SHOW_MENU,
+	SHOW_PROMPT,
 	GET_OPTION,
 	SELECT_PROGRAM,
 	MOVE_TEXT,
@@ -50,7 +51,7 @@ typedef enum {
 /* USER CODE BEGIN PD */
 
 #define RX_BUFFER_SIZE 32
-#define WELCOME_STRINGS 9
+#define WELCOME_STRINGS 8
 
 /* USER CODE END PD */
 
@@ -107,7 +108,7 @@ SDRAM_HandleTypeDef hsdram1;
 
 /* USER CODE BEGIN PV */
 
-bool haveReceived = false;
+bool haveReceived;
 char rxBuffer[RX_BUFFER_SIZE];
 char *welcomeStrings[WELCOME_STRINGS] = {
 		"|*********************************|\r\n",
@@ -117,9 +118,10 @@ char *welcomeStrings[WELCOME_STRINGS] = {
 		"\r\n",
 		"Options:\r\n",
 		"        1. Move text\r\n",
-		"        2. Clock\r\n",
-		"Input: "
+		"        2. Clock\r\n"
 };
+char *inputPrompt = "\r\nInput: ";
+char *quitPrompt = "\r\nPress any key to quit";
 
 RTC_TimeTypeDef sTime;
 RTC_DateTypeDef sDate;
@@ -147,6 +149,7 @@ static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
 bool printWelcomeText(void);
+bool printString(char *);
 bool receiveValue(int);
 void typeToLCD(void);
 void moveTextLCD(void);
@@ -215,22 +218,25 @@ int main(void)
   while (1) {
 	  switch (state) {
 	  	  case SETUP:
-	  		  LCD_Init(false, false);
+	  		  LCD_Init(true, false);
 	  		  state = SHOW_MENU;
 	  		  break;
 	  	  case SHOW_MENU:
 	  		  if (printWelcomeText()) {
-	  			  state = GET_OPTION;
+	  			  state = SHOW_PROMPT;
 	  		  }
 	  		  break;
+	  	  case SHOW_PROMPT:
+	  		  if (printString(inputPrompt)) {
+	  			  state = GET_OPTION;
+	  		  }
 	  	  case GET_OPTION:
 	  		  if (receiveValue(1)) {
 	  			  state = SELECT_PROGRAM;
 	  		  }
 	  		  break;
 	  	  case SELECT_PROGRAM:
-	  		  if (haveReceived) {
-	  			  HAL_UART_Transmit(&huart3, (const uint8_t *) rxBuffer, 1, 6000);
+	  		  if (haveReceived && printString(rxBuffer)) {
 	  			  switch (rxBuffer[0]) {
 	  			  	  case '1':
 	  			  		  state = MOVE_TEXT;
@@ -239,7 +245,7 @@ int main(void)
 	  			  		  state = CLOCK_F;
 	  			  		  break;
 	  			  	  default:
-	  			  		  state = GET_OPTION;
+	  			  		  state = SHOW_PROMPT;
 	  			  		  break;
 	  			  }
 	  			  if (state != SELECT_PROGRAM) {
@@ -249,10 +255,13 @@ int main(void)
 	  		  break;
 	  	  case MOVE_TEXT:
 	  		  moveTextLCD();
+	  		  state = SHOW_PROMPT;
+	  		  haveReceived = false;
 	  		  break;
 	  	  case CLOCK_F:
 	  		  displayClock();
-	  		  HAL_Delay(800);
+	  		  state = SHOW_PROMPT;
+	  		  haveReceived = false;
 	  		  break;
 	  	  default:
 	  		  return -1;
@@ -1330,9 +1339,18 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 bool printWelcomeText(void) {
 
 	for (int i = 0; i<WELCOME_STRINGS; i++) {
-		if (HAL_UART_Transmit(&huart3, (const uint8_t *) welcomeStrings[i], strlen(welcomeStrings[i]), 6000) != HAL_OK) {
+		if (!printString(welcomeStrings[i])) {
 			return false;
 		}
+	}
+	return true;
+
+}
+
+bool printString(char *string) {
+
+	if (HAL_UART_Transmit(&huart3, (const uint8_t *) string, strlen(string), 6000) != HAL_OK) {
+		return false;
 	}
 	return true;
 
@@ -1350,26 +1368,31 @@ bool receiveValue(int bytesToReceive) {
 
 void moveTextLCD(void) {
 
+	LCD_Clear();
 	strcpy(rxBuffer, "Hello");
 	HAL_Delay(1000);
 	LCD_Write(rxBuffer);
 	int i = 0, stringLength = strlen(rxBuffer);
 	bool edge = false;
-	while (1) {
-		if (i < (16 - stringLength) && !edge) {
-			LCD_Scroll_Display_Right();
-			i++;
-			if (i == (16 - stringLength)) {
-				edge = true;
-			}
-		} else if (edge) {
-			LCD_Scroll_Display_Left();
-			i--;
-			if (i == 0) {
-				edge = false;
+	if (receiveValue(1)) {
+		if (printString(quitPrompt)) {
+			while (!haveReceived) {
+				if (i < (16 - stringLength) && !edge) {
+					LCD_Scroll_Display_Right();
+					i++;
+					if (i == (16 - stringLength)) {
+						edge = true;
+					}
+				} else if (edge) {
+					LCD_Scroll_Display_Left();
+					i--;
+					if (i == 0) {
+						edge = false;
+					}
+				}
+				HAL_Delay(1000);
 			}
 		}
-		HAL_Delay(1000);
 	}
 
 }
@@ -1379,18 +1402,25 @@ void displayClock() {
 	uint8_t seconds, minutes, hours;
 	char timeString[9];
 
-	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-	seconds = sTime.Seconds;
-	minutes = sTime.Minutes;
-	hours = sTime.Hours;
-	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-	sprintf(timeString, "%02u:%02u:%02u", hours, minutes, seconds);
+	if (receiveValue(1)) {
+		if (printString(quitPrompt)) {
+			LCD_Clear();
+			while (!haveReceived) {
+				HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+				seconds = sTime.Seconds;
+				minutes = sTime.Minutes;
+				hours = sTime.Hours;
+				HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+				sprintf(timeString, "%02u:%02u:%02u", hours, minutes, seconds);
 
-	HAL_Delay(100);
-	LCD_Pos_Cursor(0, 0);
-	HAL_Delay(100);
-	LCD_Write(timeString);
-
+				HAL_Delay(100);
+				LCD_Pos_Cursor(0, 0);
+				HAL_Delay(100);
+				LCD_Write(timeString);
+				HAL_Delay(800);
+			}
+		}
+	}
 
 }
 
