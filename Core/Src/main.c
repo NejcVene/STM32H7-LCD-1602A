@@ -41,6 +41,7 @@ typedef enum {
 	SHOW_PROMPT,
 	GET_OPTION,
 	SELECT_PROGRAM,
+	TYPE_TO_LCD,
 	MOVE_TEXT,
 	CLOCK_F
 } STATE;
@@ -51,7 +52,7 @@ typedef enum {
 /* USER CODE BEGIN PD */
 
 #define RX_BUFFER_SIZE 32
-#define WELCOME_STRINGS 8
+#define WELCOME_STRINGS 9
 
 /* USER CODE END PD */
 
@@ -108,7 +109,7 @@ SDRAM_HandleTypeDef hsdram1;
 
 /* USER CODE BEGIN PV */
 
-bool haveReceived;
+bool haveReceived, receiverActive = false;
 char rxBuffer[RX_BUFFER_SIZE];
 char *welcomeStrings[WELCOME_STRINGS] = {
 		"|*********************************|\r\n",
@@ -117,8 +118,9 @@ char *welcomeStrings[WELCOME_STRINGS] = {
 		"|*********************************|\r\n",
 		"\r\n",
 		"Options:\r\n",
-		"        1. Move text\r\n",
-		"        2. Clock\r\n"
+		"        1. Type to LCD\r\n",
+		"        2. Move text\r\n",
+		"        3. Clock\r\n"
 };
 char *inputPrompt = "\r\nInput: ";
 char *quitPrompt = "\r\nPress any key to quit";
@@ -230,8 +232,9 @@ int main(void)
 	  		  if (printString(inputPrompt)) {
 	  			  state = GET_OPTION;
 	  		  }
+	  		  break;
 	  	  case GET_OPTION:
-	  		  if (receiveValue(1)) {
+	  		  if (!receiverActive && receiveValue(1)) {
 	  			  state = SELECT_PROGRAM;
 	  		  }
 	  		  break;
@@ -239,9 +242,12 @@ int main(void)
 	  		  if (haveReceived && printString(rxBuffer)) {
 	  			  switch (rxBuffer[0]) {
 	  			  	  case '1':
-	  			  		  state = MOVE_TEXT;
+	  			  		  state = TYPE_TO_LCD;
 	  			  		  break;
 	  			  	  case '2':
+	  			  		  state = MOVE_TEXT;
+	  			  		  break;
+	  			  	  case '3':
 	  			  		  state = CLOCK_F;
 	  			  		  break;
 	  			  	  default:
@@ -252,6 +258,11 @@ int main(void)
 	  				  haveReceived = false;
 	  			  }
 	  		  }
+	  		  break;
+	  	  case TYPE_TO_LCD:
+	  		  typeToLCD();
+	  		  state = SHOW_PROMPT;
+	  		  haveReceived = false;
 	  		  break;
 	  	  case MOVE_TEXT:
 	  		  moveTextLCD();
@@ -1332,6 +1343,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	if (huart == &huart3) {
 		haveReceived = true;
+		receiverActive = false;
 	}
 
 }
@@ -1361,7 +1373,37 @@ bool receiveValue(int bytesToReceive) {
 	if (HAL_UART_Receive_IT(&huart3, rxBuffer, bytesToReceive) != HAL_OK) {
 		return false;
 	}
+	receiverActive = true;
 	return true;
+
+}
+
+void typeToLCD(void) {
+
+	int index = 0;
+	if (printString(inputPrompt)) {
+		LCD_Clear();
+		HAL_Delay(100);
+		while (1) {
+			if (haveReceived && printString(rxBuffer)) {
+				LCD_Write_Char(rxBuffer[0]);
+				// LCD_Pos_Cursor(col > 2 ? (0, 1) : 0, ++col);
+				haveReceived = false;
+				if (index == 15) {
+					LCD_Pos_Cursor(1, 0);
+				}
+				index++;
+			}
+			if (index >= 32) {
+				return;
+			}
+			if (!receiverActive) {
+				receiveValue(1);
+			}
+			HAL_Delay(700);
+		}
+
+	}
 
 }
 
@@ -1397,7 +1439,7 @@ void moveTextLCD(void) {
 
 }
 
-void displayClock() {
+void displayClock(void) {
 
 	uint8_t seconds, minutes, hours;
 	char timeString[9];

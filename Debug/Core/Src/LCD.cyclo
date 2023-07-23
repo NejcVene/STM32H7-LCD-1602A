@@ -4,8 +4,9 @@ LCD.c:49:6:__LCD_Send	1
 LCD.c:62:6:__LCD_Cmd	1
 LCD.c:73:6:__LCD_Data	1
 LCD.c:84:6:LCD_Write	2
-LCD.c:100:6:LCD_Pos_Cursor	3
-LCD.c:123:6:LCD_Clear	1
-LCD.c:134:6:LCD_Scroll_Display_Right	1
-LCD.c:145:6:LCD_Scroll_Display_Left	1
-LCD.c:157:6:LCD_Init	5
+LCD.c:99:6:LCD_Write_Char	1
+LCD.c:112:6:LCD_Pos_Cursor	3
+LCD.c:135:6:LCD_Clear	1
+LCD.c:146:6:LCD_Scroll_Display_Right	1
+LCD.c:157:6:LCD_Scroll_Display_Left	1
+LCD.c:169:6:LCD_Init	5

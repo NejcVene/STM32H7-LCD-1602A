@@ -92,6 +92,18 @@ void LCD_Write(char *value) {
 }
 
 /*
+ * @brief Function to write a single character to the LCD
+ * @param character: value to write
+ * @retval None
+ */
+void LCD_Write_Char(char character) {
+
+	__LCD_Data(character);
+	__LCD_Delay(5000);
+
+}
+
+/*
  * @brief Function to set the cursor position
  * @param row: row to set the cursor [0, 1]
  * @param col: column to set the cursor [0, 15]

@@ -4,8 +4,9 @@
 ../Core/Src/LCD.c:62:6:__LCD_Cmd	16	static
 ../Core/Src/LCD.c:73:6:__LCD_Data	16	static
 ../Core/Src/LCD.c:84:6:LCD_Write	16	static
-../Core/Src/LCD.c:100:6:LCD_Pos_Cursor	16	static
-../Core/Src/LCD.c:123:6:LCD_Clear	8	static
-../Core/Src/LCD.c:134:6:LCD_Scroll_Display_Right	8	static
-../Core/Src/LCD.c:145:6:LCD_Scroll_Display_Left	8	static
-../Core/Src/LCD.c:157:6:LCD_Init	16	static
+../Core/Src/LCD.c:99:6:LCD_Write_Char	16	static
+../Core/Src/LCD.c:112:6:LCD_Pos_Cursor	16	static
+../Core/Src/LCD.c:135:6:LCD_Clear	8	static
+../Core/Src/LCD.c:146:6:LCD_Scroll_Display_Right	8	static
+../Core/Src/LCD.c:157:6:LCD_Scroll_Display_Left	8	static
+../Core/Src/LCD.c:169:6:LCD_Init	16	static

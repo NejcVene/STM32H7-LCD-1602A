@@ -42,6 +42,7 @@
 
 void LCD_Init(bool, bool);
 void LCD_Write(char *);
+void LCD_Write_Char(char);
 void LCD_Pos_Cursor(uint8_t, uint8_t);
 void LCD_Clear(void);
 void LCD_Scroll_Display_Left(void);
