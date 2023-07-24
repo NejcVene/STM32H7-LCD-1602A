@@ -11032,66 +11032,66 @@ LOAD f:/nejc/programi/stm32cubeide_1.10.1/stm32cubeide/plugins/com.st.stm32cube.
                 0x000000000800088e        0xe ./Core/Src/LCD.o
                 0x000000000800088e                LCD_Scroll_Display_Left
  .text.LCD_Init
-                0x000000000800089c       0xca ./Core/Src/LCD.o
+                0x000000000800089c       0xc2 ./Core/Src/LCD.o
                 0x000000000800089c                LCD_Init
- *fill*         0x0000000008000966        0x2 
- .text.main     0x0000000008000968      0x184 ./Core/Src/main.o
-                0x0000000008000968                main
+ *fill*         0x000000000800095e        0x2 
+ .text.main     0x0000000008000960      0x184 ./Core/Src/main.o
+                0x0000000008000960                main
  .text.SystemClock_Config
-                0x0000000008000aec      0x104 ./Core/Src/main.o
-                0x0000000008000aec                SystemClock_Config
+                0x0000000008000ae4      0x104 ./Core/Src/main.o
+                0x0000000008000ae4                SystemClock_Config
  .text.PeriphCommonClock_Config
-                0x0000000008000bf0       0x5e ./Core/Src/main.o
-                0x0000000008000bf0                PeriphCommonClock_Config
- *fill*         0x0000000008000c4e        0x2 
+                0x0000000008000be8       0x5e ./Core/Src/main.o
+                0x0000000008000be8                PeriphCommonClock_Config
+ *fill*         0x0000000008000c46        0x2 
  .text.MX_ADC1_Init
-                0x0000000008000c50       0xec ./Core/Src/main.o
+                0x0000000008000c48       0xec ./Core/Src/main.o
  .text.MX_ADC2_Init
-                0x0000000008000d3c       0xc8 ./Core/Src/main.o
+                0x0000000008000d34       0xc8 ./Core/Src/main.o
  .text.MX_ADC3_Init
-                0x0000000008000e04       0xc4 ./Core/Src/main.o
+                0x0000000008000dfc       0xc4 ./Core/Src/main.o
  .text.MX_ETH_Init
-                0x0000000008000ec8       0x98 ./Core/Src/main.o
+                0x0000000008000ec0       0x98 ./Core/Src/main.o
  .text.MX_FDCAN1_Init
-                0x0000000008000f60       0xc8 ./Core/Src/main.o
+                0x0000000008000f58       0xc8 ./Core/Src/main.o
  .text.MX_FDCAN2_Init
-                0x0000000008001028       0xc8 ./Core/Src/main.o
+                0x0000000008001020       0xc8 ./Core/Src/main.o
  .text.MX_LTDC_Init
-                0x00000000080010f0      0x164 ./Core/Src/main.o
+                0x00000000080010e8      0x164 ./Core/Src/main.o
  .text.MX_RTC_Init
-                0x0000000008001254       0xb8 ./Core/Src/main.o
+                0x000000000800124c       0xb8 ./Core/Src/main.o
  .text.MX_SAI2_Init
-                0x000000000800130c      0x17c ./Core/Src/main.o
+                0x0000000008001304      0x17c ./Core/Src/main.o
  .text.MX_SPI2_Init
-                0x0000000008001488       0xa8 ./Core/Src/main.o
+                0x0000000008001480       0xa8 ./Core/Src/main.o
  .text.MX_TIM3_Init
-                0x0000000008001530       0xa4 ./Core/Src/main.o
+                0x0000000008001528       0xa4 ./Core/Src/main.o
  .text.MX_USART3_UART_Init
-                0x00000000080015d4       0x98 ./Core/Src/main.o
+                0x00000000080015cc       0x98 ./Core/Src/main.o
  .text.MX_USB_OTG_FS_PCD_Init
-                0x000000000800166c       0x64 ./Core/Src/main.o
+                0x0000000008001664       0x64 ./Core/Src/main.o
  .text.MX_FMC_Init
-                0x00000000080016d0       0x9c ./Core/Src/main.o
+                0x00000000080016c8       0x9c ./Core/Src/main.o
  .text.MX_GPIO_Init
-                0x000000000800176c      0x3fc ./Core/Src/main.o
+                0x0000000008001764      0x3fc ./Core/Src/main.o
  .text.HAL_UART_RxCpltCallback
-                0x0000000008001b68       0x34 ./Core/Src/main.o
-                0x0000000008001b68                HAL_UART_RxCpltCallback
+                0x0000000008001b60       0x34 ./Core/Src/main.o
+                0x0000000008001b60                HAL_UART_RxCpltCallback
  .text.printWelcomeText
-                0x0000000008001b9c       0x44 ./Core/Src/main.o
-                0x0000000008001b9c                printWelcomeText
+                0x0000000008001b94       0x44 ./Core/Src/main.o
+                0x0000000008001b94                printWelcomeText
  .text.printString
-                0x0000000008001be0       0x38 ./Core/Src/main.o
-                0x0000000008001be0                printString
+                0x0000000008001bd8       0x38 ./Core/Src/main.o
+                0x0000000008001bd8                printString
  .text.receiveValue
-                0x0000000008001c18       0x3c ./Core/Src/main.o
-                0x0000000008001c18                receiveValue
+                0x0000000008001c10       0x3c ./Core/Src/main.o
+                0x0000000008001c10                receiveValue
  .text.typeToLCD
-                0x0000000008001c54       0x98 ./Core/Src/main.o
-                0x0000000008001c54                typeToLCD
+                0x0000000008001c4c       0x98 ./Core/Src/main.o
+                0x0000000008001c4c                typeToLCD
  .text.moveTextLCD
-                0x0000000008001cec       0xd4 ./Core/Src/main.o
-                0x0000000008001cec                moveTextLCD
+                0x0000000008001ce4       0xdc ./Core/Src/main.o
+                0x0000000008001ce4                moveTextLCD
  .text.displayClock
                 0x0000000008001dc0       0xb4 ./Core/Src/main.o
                 0x0000000008001dc0                displayClock
@@ -12409,38 +12409,38 @@ LOAD f:/nejc/programi/stm32cubeide_1.10.1/stm32cubeide/plugins/com.st.stm32cube.
  .debug_macro   0x0000000000041a22      0x3e1 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_fmc.o
  .debug_macro   0x0000000000041e03      0x3b7 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.o
 
-.debug_line     0x0000000000000000    0x3051f
- .debug_line    0x0000000000000000      0xc2e ./Core/Src/LCD.o
- .debug_line    0x0000000000000c2e     0x15c7 ./Core/Src/main.o
- .debug_line    0x00000000000021f5     0x112e ./Core/Src/stm32h7xx_hal_msp.o
- .debug_line    0x0000000000003323      0xb7d ./Core/Src/stm32h7xx_it.o
- .debug_line    0x0000000000003ea0      0x52b ./Core/Src/sysmem.o
- .debug_line    0x00000000000043cb      0xc52 ./Core/Src/system_stm32h7xx.o
- .debug_line    0x000000000000501d       0x88 ./Core/Startup/startup_stm32h750xbhx.o
- .debug_line    0x00000000000050a5     0x1050 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
- .debug_line    0x00000000000060f5     0x25a9 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.o
- .debug_line    0x000000000000869e     0x216e ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.o
- .debug_line    0x000000000000a80c     0x1056 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.o
- .debug_line    0x000000000000b862     0x299f ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.o
- .debug_line    0x000000000000e201     0x1d96 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_eth.o
- .debug_line    0x000000000000ff97     0x29b1 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_fdcan.o
- .debug_line    0x0000000000012948      0xf13 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.o
- .debug_line    0x000000000001385b     0x1abf ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc.o
- .debug_line    0x000000000001531a     0x1828 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd.o
- .debug_line    0x0000000000016b42      0xc72 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd_ex.o
- .debug_line    0x00000000000177b4     0x116a ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.o
- .debug_line    0x000000000001891e     0x1620 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.o
- .debug_line    0x0000000000019f3e     0x1eee ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.o
- .debug_line    0x000000000001be2c     0x1433 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.o
- .debug_line    0x000000000001d25f     0x20e6 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sai.o
- .debug_line    0x000000000001f345     0x118d ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sdram.o
- .debug_line    0x00000000000204d2     0x215f ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.o
- .debug_line    0x0000000000022631     0x4141 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.o
- .debug_line    0x0000000000026772     0x1ffc ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.o
- .debug_line    0x000000000002876e     0x40ad ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.o
- .debug_line    0x000000000002c81b     0x10ee ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.o
- .debug_line    0x000000000002d909      0xe21 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_fmc.o
- .debug_line    0x000000000002e72a     0x1df5 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.o
+.debug_line     0x0000000000000000    0x30521
+ .debug_line    0x0000000000000000      0xc2d ./Core/Src/LCD.o
+ .debug_line    0x0000000000000c2d     0x15ca ./Core/Src/main.o
+ .debug_line    0x00000000000021f7     0x112e ./Core/Src/stm32h7xx_hal_msp.o
+ .debug_line    0x0000000000003325      0xb7d ./Core/Src/stm32h7xx_it.o
+ .debug_line    0x0000000000003ea2      0x52b ./Core/Src/sysmem.o
+ .debug_line    0x00000000000043cd      0xc52 ./Core/Src/system_stm32h7xx.o
+ .debug_line    0x000000000000501f       0x88 ./Core/Startup/startup_stm32h750xbhx.o
+ .debug_line    0x00000000000050a7     0x1050 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
+ .debug_line    0x00000000000060f7     0x25a9 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.o
+ .debug_line    0x00000000000086a0     0x216e ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.o
+ .debug_line    0x000000000000a80e     0x1056 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.o
+ .debug_line    0x000000000000b864     0x299f ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.o
+ .debug_line    0x000000000000e203     0x1d96 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_eth.o
+ .debug_line    0x000000000000ff99     0x29b1 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_fdcan.o
+ .debug_line    0x000000000001294a      0xf13 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.o
+ .debug_line    0x000000000001385d     0x1abf ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc.o
+ .debug_line    0x000000000001531c     0x1828 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd.o
+ .debug_line    0x0000000000016b44      0xc72 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd_ex.o
+ .debug_line    0x00000000000177b6     0x116a ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.o
+ .debug_line    0x0000000000018920     0x1620 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.o
+ .debug_line    0x0000000000019f40     0x1eee ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.o
+ .debug_line    0x000000000001be2e     0x1433 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.o
+ .debug_line    0x000000000001d261     0x20e6 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sai.o
+ .debug_line    0x000000000001f347     0x118d ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sdram.o
+ .debug_line    0x00000000000204d4     0x215f ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.o
+ .debug_line    0x0000000000022633     0x4141 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.o
+ .debug_line    0x0000000000026774     0x1ffc ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.o
+ .debug_line    0x0000000000028770     0x40ad ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.o
+ .debug_line    0x000000000002c81d     0x10ee ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.o
+ .debug_line    0x000000000002d90b      0xe21 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_fmc.o
+ .debug_line    0x000000000002e72c     0x1df5 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.o
 
 .debug_str      0x0000000000000000   0x1a5f9c
  .debug_str     0x0000000000000000   0x19562a ./Core/Src/LCD.o

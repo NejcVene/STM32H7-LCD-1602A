@@ -209,7 +209,6 @@ void LCD_Init(bool cursor, bool blinking) {
 	}
 
 	__LCD_Delay(50000);
-	LCD_Pos_Cursor(0, 0);
 
 }
 

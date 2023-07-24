@@ -22,5 +22,5 @@ main.c:1362:6:printString	2
 main.c:1371:6:receiveValue	2
 main.c:1381:6:typeToLCD	7
 main.c:1411:6:moveTextLCD	9
-main.c:1442:6:displayClock	4
-main.c:1476:6:Error_Handler	1
+main.c:1443:6:displayClock	4
+main.c:1477:6:Error_Handler	1

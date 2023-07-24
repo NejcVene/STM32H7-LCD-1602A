@@ -1436,6 +1436,7 @@ void moveTextLCD(void) {
 			}
 		}
 	}
+	memset(rxBuffer, 0, RX_BUFFER_SIZE);
 
 }
 
