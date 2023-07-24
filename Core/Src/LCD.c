@@ -168,6 +168,10 @@ void LCD_Scroll_Display_Left(void) {
  */
 void LCD_Init(bool cursor, bool blinking) {
 
+	/*
+	 * If LCD is not correctly initialized, I suggest to increase the delays
+	 */
+
 	// Init
 	__LCD_Delay(50000);
 	__LCD_Cmd(0x30);

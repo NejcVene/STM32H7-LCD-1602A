@@ -35,6 +35,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+// FSM states
 typedef enum {
 	SETUP,
 	SHOW_MENU,
@@ -219,25 +220,30 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1) {
 	  switch (state) {
+	  	  // Initialize LCD
 	  	  case SETUP:
 	  		  LCD_Init(true, false);
 	  		  state = SHOW_MENU;
 	  		  break;
+	  	  // print welcome strings
 	  	  case SHOW_MENU:
 	  		  if (printWelcomeText()) {
 	  			  state = SHOW_PROMPT;
 	  		  }
 	  		  break;
+	  	  // show input prompt
 	  	  case SHOW_PROMPT:
 	  		  if (printString(inputPrompt)) {
 	  			  state = GET_OPTION;
 	  		  }
 	  		  break;
+	  	  // activate huart3 for reception
 	  	  case GET_OPTION:
 	  		  if (!receiverActive && receiveValue(1)) {
 	  			  state = SELECT_PROGRAM;
 	  		  }
 	  		  break;
+	  	  // get user input and choose program (for invalid input set state to SHOW_PROMPT)
 	  	  case SELECT_PROGRAM:
 	  		  if (haveReceived && printString(rxBuffer)) {
 	  			  switch (rxBuffer[0]) {
@@ -259,16 +265,19 @@ int main(void)
 	  			  }
 	  		  }
 	  		  break;
+	  	  // program to allow user to type text to LCD
 	  	  case TYPE_TO_LCD:
 	  		  typeToLCD();
 	  		  state = SHOW_PROMPT;
 	  		  haveReceived = false;
 	  		  break;
+	  	  // program to move text across LCD
 	  	  case MOVE_TEXT:
 	  		  moveTextLCD();
 	  		  state = SHOW_PROMPT;
 	  		  haveReceived = false;
 	  		  break;
+	  	  // program to simulate clock on LCD
 	  	  case CLOCK_F:
 	  		  displayClock();
 	  		  state = SHOW_PROMPT;
@@ -1339,6 +1348,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 
+// rx transfer completed callback
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	if (huart == &huart3) {
@@ -1348,6 +1358,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 }
 
+// try to print welcome text
 bool printWelcomeText(void) {
 
 	for (int i = 0; i<WELCOME_STRINGS; i++) {
@@ -1359,6 +1370,7 @@ bool printWelcomeText(void) {
 
 }
 
+// try to print a string to terminal
 bool printString(char *string) {
 
 	if (HAL_UART_Transmit(&huart3, (const uint8_t *) string, strlen(string), 6000) != HAL_OK) {
@@ -1368,6 +1380,7 @@ bool printString(char *string) {
 
 }
 
+// try to receive bytesToReceive of bytes
 bool receiveValue(int bytesToReceive) {
 
 	if (HAL_UART_Receive_IT(&huart3, rxBuffer, bytesToReceive) != HAL_OK) {
@@ -1387,16 +1400,18 @@ void typeToLCD(void) {
 		while (1) {
 			if (haveReceived && printString(rxBuffer)) {
 				LCD_Write_Char(rxBuffer[0]);
-				// LCD_Pos_Cursor(col > 2 ? (0, 1) : 0, ++col);
 				haveReceived = false;
+				// Position cursor to the next line, when 15 characters have been written
 				if (index == 15) {
 					LCD_Pos_Cursor(1, 0);
 				}
 				index++;
 			}
+			// stop the program when 32 characters have been written
 			if (index >= 32) {
 				return;
 			}
+			// check, if huart3 is active - if it is, then we are waiting for input
 			if (!receiverActive) {
 				receiveValue(1);
 			}
@@ -1416,26 +1431,33 @@ void moveTextLCD(void) {
 	LCD_Write(rxBuffer);
 	int i = 0, stringLength = strlen(rxBuffer);
 	bool edge = false;
-	if (receiveValue(1)) {
-		if (printString(quitPrompt)) {
-			while (!haveReceived) {
-				if (i < (16 - stringLength) && !edge) {
-					LCD_Scroll_Display_Right();
-					i++;
-					if (i == (16 - stringLength)) {
-						edge = true;
-					}
-				} else if (edge) {
-					LCD_Scroll_Display_Left();
-					i--;
-					if (i == 0) {
-						edge = false;
-					}
+	if (receiveValue(1) && printString(quitPrompt)) {
+		// repeat until user presses a key
+		while (!haveReceived) {
+			// if string has not hit the right edge, then move it to the right
+			// note: 16 is the max. number of characters in one line
+			if (i < (16 - stringLength) && !edge) {
+				LCD_Scroll_Display_Right();
+				i++;
+				// if hits the edge, set true
+				if (i == (16 - stringLength)) {
+					edge = true;
 				}
-				HAL_Delay(1000);
+			} else if (edge) {
+				// if this is true, then we have hit the right edge and must scroll text back to the left edge
+				LCD_Scroll_Display_Left();
+				i--;
+				// if we hit the left edge, then set false
+				if (i == 0) {
+					edge = false;
+				}
 			}
+			// delay for a second
+			HAL_Delay(1000);
 		}
 	}
+
+	// clear rxBuffer (write zeros)
 	memset(rxBuffer, 0, RX_BUFFER_SIZE);
 
 }
@@ -1445,23 +1467,25 @@ void displayClock(void) {
 	uint8_t seconds, minutes, hours;
 	char timeString[9];
 
-	if (receiveValue(1)) {
-		if (printString(quitPrompt)) {
-			LCD_Clear();
-			while (!haveReceived) {
-				HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-				seconds = sTime.Seconds;
-				minutes = sTime.Minutes;
-				hours = sTime.Hours;
-				HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-				sprintf(timeString, "%02u:%02u:%02u", hours, minutes, seconds);
+	if (receiveValue(1) && printString(quitPrompt)) {
+		LCD_Clear();
+		// loop until user presses a key
+		while (!haveReceived) {
+			// get current time
+			HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+			seconds = sTime.Seconds;
+			minutes = sTime.Minutes;
+			hours = sTime.Hours;
+			HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN); // this is needed to unlock the values in the higher-order calendar shadow registers
+			// set time to a string
+			sprintf(timeString, "%02u:%02u:%02u", hours, minutes, seconds);
 
-				HAL_Delay(100);
-				LCD_Pos_Cursor(0, 0);
-				HAL_Delay(100);
-				LCD_Write(timeString);
-				HAL_Delay(800);
-			}
+			// write time and delay for a second
+			HAL_Delay(100);
+			LCD_Pos_Cursor(0, 0);
+			HAL_Delay(100);
+			LCD_Write(timeString);
+			HAL_Delay(800);
 		}
 	}
 
