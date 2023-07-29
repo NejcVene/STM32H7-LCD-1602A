@@ -3,6 +3,8 @@ Functions that enable the LCD 1602A to work with STM32H7
 
 <h3>
   LCD Functions:
+</h3>
+<p>
   <ul>
     <li>
       LCD_Init(bool, bool) initializes the LCD. Takes two parameters that setup the cursor.
@@ -26,7 +28,7 @@ Functions that enable the LCD 1602A to work with STM32H7
       LCD_Scroll_Display_Left(void) scrolls contents for one position to the left.
     </li>
   </ul>
-</h3>
+</p>
 
 <h3>
   Connections
