@@ -37,10 +37,20 @@ Functions that enable the LCD 1602A to work with STM32H7
   <ul>
     <li>
       RS to PB7 (H7)
+    </li>
+    <li>
       E to PB6 (H7)
+    </li>
+    <li>
       DB4 to PG3 (H7)
+    </li>
+    <li>
       DB5 to PA6 (H7)
+    </li>
+    <li>
       DB6 to PK1 (H7)
+    </li>
+    <li>
       DB7 to PA8 (H7)
     </li>
   </ul>
