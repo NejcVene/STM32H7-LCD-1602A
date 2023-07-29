@@ -2,7 +2,7 @@
 Functions that enable the LCD 1602A to work with STM32H7
 
 <h3>
-  LCD Functions:
+  LCD Functions
 </h3>
 <p>
   <ul>
